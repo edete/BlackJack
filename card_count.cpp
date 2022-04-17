@@ -7,7 +7,7 @@
 using namespace std;
 
 
-int main(){
+int main2(){
 
 	srand(time(NULL));
 
