@@ -11,29 +11,19 @@
 using namespace std;
 
 int main() {
-    int count = 0;
-    Shoe S(2);
-    S.shuffle();
-    S.shuffle();
-    S.shuffle();
+    
+    string Player = "P";
+    string Dealer = "D";
+    Round R1;
+    R1.shuffle();
+    R1.shuffle();
+    R1.shuffle();
+    R1.hit(Player);
+    R1.hit(Player);
+
 
     for(int i = 0;i<100;i++){
-    cout << S.Cards[i] << endl;
-    }
-
-
-    Round R1(S,&count);
-    R1.Player.hit(S,&count);
-    S.pull();
-    R1.Player.hit(S,&count);
-    S.pull();
-    R1.Dealer.hit(S,&count);
-    S.pull();
-    R1.Dealer.hit(S,&count);
-    S.pull();
-
-    for(int i = 0;i<100;i++){
-    cout << S.Cards[i] << endl;
+    cout << R1.s.Cards[i] << endl;
     }
 
     cout << "Player Hand: ";
