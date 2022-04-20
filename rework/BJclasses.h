@@ -167,6 +167,10 @@ class Round {
         cout << "Push." << endl;
         return 3;
     }
+    else if(Dealer.value()>21) {
+        cout << "You win!" << endl;
+        return 1;
+    }
     else {
         cout << "No winner determined." << endl;
         return 0;
@@ -175,14 +179,26 @@ class Round {
 
     int check() {
     if(Player.value() > 21){
+        cout << "Player Hand: ";
+        Player.getHand();
+        cout << "Dealer Hand: ";
+        Dealer.getHand();
         cout << "Dealer wins!" << endl;
         return 2;
     }
     else if(Player.value()==21 && Player.hand.size()==2) {
+        cout << "Player Hand: ";
+        Player.getHand();
+        cout << "Dealer Hand: ";
+        Dealer.getHand();
         cout << "You have Blackjack!" << endl;
         return 1;
     }
     else if(Dealer.value()==21) {
+        cout << "Player Hand: ";
+        Player.getHand();
+        cout << "Dealer Hand: ";
+        Dealer.getHand();
         cout << "Dealer has Blackjack!" << endl;
         return 2;
     }
