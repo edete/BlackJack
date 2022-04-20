@@ -14,11 +14,19 @@ SOURCES += \
     deal.cpp \
     main.cpp \
     mainwindow.cpp \
+    rework/blackjackmain.cpp \
+    rework/hand.cpp \
+    rework/round.cpp \
+    rework/shoe.cpp \
     value.cpp
 
 HEADERS += \
     deal.h \
     mainwindow.h \
+    rework/BJclasses.h \
+    rework/hand.h \
+    rework/round.h \
+    rework/shoe.h \
     rng.h
 
 FORMS += \
