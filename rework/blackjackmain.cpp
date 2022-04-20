@@ -11,35 +11,48 @@
 using namespace std;
 
 int main() {
-    int count = 0;
-    Shoe S(2);
-    S.shuffle();
-    S.shuffle();
-    S.shuffle();
+    int win = 0;
+    string Player = "P";
+    string Dealer = "D";
+    string action = "";
+    Round R1;
+    R1.shuffle();
+    R1.shuffle();
+    R1.shuffle();
 
-    for(int i = 0;i<100;i++){
-    cout << S.Cards[i] << endl;
+    while(R1.s.Cards.size() != 0){
+        R1.newRound();
+        win = R1.check();
+
+        while(win == 0) {
+            cout << "Player Hand: ";
+            R1.Player.getHand();
+
+            cout << "Dealer Hand: ";
+            R1.Dealer.getDHand();
+
+            cin>>action;
+
+            if(action == "hit") {
+                R1.hit(Player);
+                win = R1.check();
+                }
+            else if(action == "stand"){
+                R1.playerStand();
+                cout << "Player Hand: ";
+                R1.Player.getHand();
+                cout << "Dealer Hand: ";
+                R1.Dealer.getHand();
+                win = R1.win();
+                break;
+                }
+            else if(action == "break"){
+                R1.s.Cards.clear();
+                break;
+                }
+
+        }
     }
 
-
-    Round R1(S,&count);
-    R1.Player.hit(S,&count);
-    S.pull();
-    R1.Player.hit(S,&count);
-    S.pull();
-    R1.Dealer.hit(S,&count);
-    S.pull();
-    R1.Dealer.hit(S,&count);
-    S.pull();
-
-    for(int i = 0;i<100;i++){
-    cout << S.Cards[i] << endl;
-    }
-
-    cout << "Player Hand: ";
-    R1.Player.getHand();
-
-    cout << "Dealer Hand: ";
-    R1.Dealer.getHand();
-
+    return 0;
 }

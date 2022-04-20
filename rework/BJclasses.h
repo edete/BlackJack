@@ -25,18 +25,8 @@ class Shoe {
 			deck.push_back(i);
 		}
 	}
-    }
-
-    Shoe(int n) {
-    //Creation of a deck
-    vector<int> deck;
-	for(int i = 1;i<13;i++) {
-		for(int j = 0;j<4;j++){
-			deck.push_back(i);
-		}
-	}
-	//Creation of 2 deck shoe
-	Cards = deck;
+    int n = deck.size();
+    Cards = deck;
     for(int i = 0;i<n;i++) {
 	    for(vector<int>::iterator iter = deck.begin();iter != deck.end() ; iter++){
 		    Cards.push_back(*iter);
@@ -44,25 +34,10 @@ class Shoe {
     }
     }
 
-    void shuffle() {
-    rng::tsc_seed seed;
-	rng::rng128 gen(seed());
-
-    int numcards = Cards.size();
-
-	for (int k = 0; k < numcards; k++) {
-    int r = k + gen() % (numcards - k); // careful here!
-    swap(Cards[k], Cards[r]);
-    }
-    }
-
-    void pull() {
-        Cards.erase(Cards.begin());
-    }
 };
 
 
-class Hand : public Shoe {
+class Hand {
     private:
         vector<int> hand;
 
@@ -70,7 +45,6 @@ class Hand : public Shoe {
     friend class Round;
 
     Hand() {
-        cout << "default" << endl;
     }
 
     Hand(Shoe s, int*count) { //creates a starter hand
@@ -116,61 +90,155 @@ class Hand : public Shoe {
     return value;
     }
 
-    void hit(Shoe s, int* count) {
-    vector<int>::iterator i = s.Cards.begin();
-
-    int card = *i;
-    hand.push_back(card);
-    }
 
     void getHand() {
     int numcards = hand.size();
     for(vector<int>::iterator i = hand.begin();i != hand.end();i++) {
-    cout << *i << " ";
+        if(*i==1 && (std::accumulate(hand.begin(), hand.end(),0)) < 21) {
+            cout << "11 ";
+        }
+        else if(*i==1 && (std::accumulate(hand.begin(), hand.end(),0)) > 21) {
+            cout << "1 ";
+        }
+        else if(*i >=10){
+            cout << "10 ";
+        }
+        else {
+            cout << *i << " ";
+        }
     }
     cout << endl;
+    }
+
+    void getDHand() {
+    if(hand[0] == 11) {
+            cout << "11";
+        }
+    else if(hand[0] >=10){
+            cout << "10";
+        }
+    else {
+            cout << hand[0];
+        }
+        cout << endl;
     }
 
 };
 
 
-class Round : public Hand {
+class Round {
     public:
+    Shoe s;
+    int count;
     Hand Dealer;
     Hand Player;
+    
 
-    Round(Shoe s, int*count) {
-    Hand Player(s, count);
-    Hand Dealer(s, count);
+    Round() {
+    Shoe s;
+    count = 0;
+    shuffle();
+    shuffle();
+    hit("D");
+    hit("D");
+    hit("P");
+    hit("P");
+    }
+
+    void newRound() {
+        Player.hand.clear();
+        Dealer.hand.clear();
+        hit("D");
+        hit("D");
+        hit("P");
+        hit("P");
     }
 
     int win() {
     if(Player.value()>Dealer.value() && Player.value()<=21) {
-        return 1;
         cout << "You win!" << endl;
+        return 1;
     }
     else if(Dealer.value()>Player.value() && Dealer.value()<=21){
-        return 0;
         cout << "Dealer wins!" << endl;
+        return 2;
     }
     else if(Dealer.value()==Player.value()) {
+        cout << "Push." << endl;
         return 3;
     }
     else {
         cout << "No winner determined." << endl;
-        return 2;
+        return 0;
     }
     }
 
-    void playerStand(Shoe s, int* count) {
+    int check() {
+    if(Player.value() > 21){
+        cout << "Dealer wins!" << endl;
+        return 2;
+    }
+    else if(Player.value()==21 && Player.hand.size()==2) {
+        cout << "You have Blackjack!" << endl;
+        return 1;
+    }
+    else if(Dealer.value()==21) {
+        cout << "Dealer has Blackjack!" << endl;
+        return 2;
+    }
+    return 0;
+    }
+
+    void playerStand() {
     while(Dealer.value()<21) {
         if(Dealer.value()<Player.value() && Dealer.value()<17){
-            Dealer.hit(s,count);
+            vector<int>::iterator i = s.Cards.begin();
+            int card = *i;
+            Dealer.hand.push_back(card);
+            if(card < 7) {
+            count++;
+            }
+            else if(card>=10) {
+                count--;
+            }
+            s.Cards.erase(s.Cards.begin());
         }
         else if(Dealer.value()>=17) {
             break;
         }
     }
+    }
+
+    void shuffle() {
+    rng::tsc_seed seed;
+	rng::rng128 gen(seed());
+
+    int numcards = s.Cards.size();
+
+	for (int k = 0; k < numcards; k++) {
+    int r = k + gen() % (numcards - k); // careful here!
+    swap(s.Cards[k], s.Cards[r]);
+    }
+    }
+
+    void hit(string user) {
+    vector<int>::iterator i = s.Cards.begin();
+    int card = *i;
+
+    if(user == "P"){
+    Player.hand.push_back(card);
+    }
+    else if(user == "D"){
+    Dealer.hand.push_back(card);
+    }
+    
+    if(card < 7) {
+        count++;
+    }
+    else if(card>=10) {
+        count--;
+    }
+    s.Cards.erase(s.Cards.begin());
     }
 
 };
