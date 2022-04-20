@@ -94,9 +94,33 @@ class Hand {
     void getHand() {
     int numcards = hand.size();
     for(vector<int>::iterator i = hand.begin();i != hand.end();i++) {
-    cout << *i << " ";
+        if(*i==1 && (std::accumulate(hand.begin(), hand.end(),0)) < 21) {
+            cout << "11 ";
+        }
+        else if(*i==1 && (std::accumulate(hand.begin(), hand.end(),0)) > 21) {
+            cout << "1 ";
+        }
+        else if(*i >=10){
+            cout << "10 ";
+        }
+        else {
+            cout << *i << " ";
+        }
     }
     cout << endl;
+    }
+
+    void getDHand() {
+    if(hand[0] == 11) {
+            cout << "11";
+        }
+    else if(hand[0] >=10){
+            cout << "10";
+        }
+    else {
+            cout << hand[0];
+        }
+        cout << endl;
     }
 
 };
@@ -121,22 +145,48 @@ class Round {
     hit("P");
     }
 
+    void newRound() {
+        Player.hand.clear();
+        Dealer.hand.clear();
+        hit("D");
+        hit("D");
+        hit("P");
+        hit("P");
+    }
+
     int win() {
     if(Player.value()>Dealer.value() && Player.value()<=21) {
-        return 1;
         cout << "You win!" << endl;
+        return 1;
     }
     else if(Dealer.value()>Player.value() && Dealer.value()<=21){
-        return 0;
         cout << "Dealer wins!" << endl;
+        return 2;
     }
     else if(Dealer.value()==Player.value()) {
+        cout << "Push." << endl;
         return 3;
     }
     else {
         cout << "No winner determined." << endl;
+        return 0;
+    }
+    }
+
+    int check() {
+    if(Player.value() > 21){
+        cout << "Dealer wins!" << endl;
         return 2;
     }
+    else if(Player.value()==21 && Player.hand.size()==2) {
+        cout << "You have Blackjack!" << endl;
+        return 1;
+    }
+    else if(Dealer.value()==21) {
+        cout << "Dealer has Blackjack!" << endl;
+        return 2;
+    }
+    return 0;
     }
 
     void playerStand() {
