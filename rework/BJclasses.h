@@ -92,9 +92,8 @@ class Hand {
 
 
     void getHand() {
-    int numcards = hand.size();
     for(vector<int>::iterator i = hand.begin();i != hand.end();i++) {
-        if(*i==1 && (std::accumulate(hand.begin(), hand.end(),0)) < 21) {
+        if(*i==1 && (std::accumulate(hand.begin(), hand.end(),0)) <= 21) {
             cout << "11 ";
         }
         else if(*i==1 && (std::accumulate(hand.begin(), hand.end(),0)) > 21) {
@@ -206,7 +205,7 @@ class Round {
     }
 
     void playerStand() {
-    while(Dealer.value()<21) {
+    while(Dealer.value()<=21) {
         if(Dealer.value()<Player.value() && Dealer.value()<17){
             vector<int>::iterator i = s.Cards.begin();
             int card = *i;
@@ -223,6 +222,9 @@ class Round {
             s.Cards.erase(s.Cards.begin());
         }
         else if(Dealer.value()>=17) {
+            break;
+        }
+        else {
             break;
         }
     }
