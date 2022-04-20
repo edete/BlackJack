@@ -46,6 +46,9 @@ int main() {
                 win = R1.win();
                 break;
                 }
+            else if(action == "count") {
+                R1.getCount();
+            }
             else if(action == "break"){
                 R1.s.Cards.clear();
                 break;

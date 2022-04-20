@@ -201,6 +201,9 @@ class Round {
             else if(card>=10) {
                 count--;
             }
+            else{
+
+            }
             s.Cards.erase(s.Cards.begin());
         }
         else if(Dealer.value()>=17) {
@@ -224,21 +227,27 @@ class Round {
     void hit(string user) {
     vector<int>::iterator i = s.Cards.begin();
     int card = *i;
-
+    {
     if(user == "P"){
     Player.hand.push_back(card);
     }
     else if(user == "D"){
     Dealer.hand.push_back(card);
     }
-    
+    }
+    {
     if(card < 7) {
         count++;
     }
     else if(card>=10) {
         count--;
     }
+    }
     s.Cards.erase(s.Cards.begin());
+    
+    }
+    void getCount() {
+        cout << "Count: " << count << endl;
     }
 
 };
