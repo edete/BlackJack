@@ -60,68 +60,6 @@ class Hand {
     s.Cards.erase(i);
     }
 
-    int value() {
-    vector<int> handvalue;
-    int numcards = hand.size();
-    int value = 0;
-
-    //Create the original value of the hand
-    for(int i = 0;i<numcards;i++){
-        if(hand[i]==1){
-            handvalue.push_back(11);
-        }
-        else if(hand[i]==11 || hand[i]==12 || hand[i]==13){
-            handvalue.push_back(10);
-        }
-        else {
-            handvalue.push_back(hand[i]);
-        }
-    }
-    
-    //Fix exceptions
-    for(int i = 0;i<numcards;i++){
-        if(handvalue[i]==11 && (std::accumulate(handvalue.begin(), handvalue.end(),0)) > 21) {
-            handvalue[i] = 1;
-        }
-    }
-
-    value = std::accumulate(handvalue.begin(), handvalue.end(),0);
-    
-    return value;
-    }
-
-
-    void getHand() {
-    for(vector<int>::iterator i = hand.begin();i != hand.end();i++) {
-        if(*i==1 && (std::accumulate(hand.begin(), hand.end(),0)) <= 21) {
-            cout << "11 ";
-        }
-        else if(*i==1 && (std::accumulate(hand.begin(), hand.end(),0)) > 21) {
-            cout << "1 ";
-        }
-        else if(*i >=10){
-            cout << "10 ";
-        }
-        else {
-            cout << *i << " ";
-        }
-    }
-    cout << endl;
-    }
-
-    void getDHand() {
-    if(hand[0] == 11) {
-            cout << "11";
-        }
-    else if(hand[0] >=10){
-            cout << "10";
-        }
-    else {
-            cout << hand[0];
-        }
-        cout << endl;
-    }
-
 };
 
 
@@ -153,20 +91,64 @@ class Round {
         hit("P");
     }
 
+    void getDHand() {
+    if(Dealer.hand[0] == 1) {
+            cout << "A";
+        }
+    else if(Dealer.hand[0] >= 10) {
+        cout << "10";
+    }
+    else {
+            cout << Dealer.hand[0];
+        }
+        cout << endl;
+    }
+
+    void getHand(string user) {
+    
+    if(user == "P"){
+    for(vector<int>::iterator i = Player.hand.begin();i != Player.hand.end();i++) {
+        if(*i==1) {
+            cout << "A ";
+        }
+        else if(*i >=10){
+            cout << "10 ";
+        }
+        else {
+            cout << *i << " ";
+        }
+    }
+    }
+    else if(user == "D"){
+    for(vector<int>::iterator i = Dealer.hand.begin();i != Dealer.hand.end();i++) {
+        if(*i==1) {
+            cout << "A ";
+        }
+        else if(*i >=10){
+            cout << "10 ";
+        }
+        else {
+            cout << *i << " ";
+        }
+    }
+    }
+    cout << endl;
+    }
+
     int win() {
-    if(Player.value()>Dealer.value() && Player.value()<=21) {
+    if(value("P")>value("D") && value("P")<=21) {
         cout << "You win!" << endl;
         return 1;
     }
-    else if(Dealer.value()>Player.value() && Dealer.value()<=21){
+    else if(value("D")>value("P") && value("D")<=21){
         cout << "Dealer wins!" << endl;
         return 2;
     }
-    else if(Dealer.value()==Player.value()) {
+    else if(value("D") == value("P")) {
         cout << "Push." << endl;
         return 3;
     }
-    else if(Dealer.value()>21) {
+    else if(value("D")>21) {
         cout << "You win!" << endl;
         return 1;
     }
@@ -177,27 +159,27 @@ class Round {
     }
 
     int check() {
-    if(Player.value() > 21){
+    if(value("P") > 21){
         cout << "Player Hand: ";
-        Player.getHand();
+        getHand("P");
         cout << "Dealer Hand: ";
-        Dealer.getHand();
+        getHand("D");
         cout << "Dealer wins!" << endl;
         return 2;
     }
-    else if(Player.value()==21 && Player.hand.size()==2) {
+    else if(value("P")==21 && Player.hand.size()==2) {
         cout << "Player Hand: ";
-        Player.getHand();
+        getHand("P");
         cout << "Dealer Hand: ";
-        Dealer.getHand();
+        getHand("D");
         cout << "You have Blackjack!" << endl;
         return 1;
     }
-    else if(Dealer.value()==21) {
+    else if(value("D")==21) {
         cout << "Player Hand: ";
-        Player.getHand();
+        getHand("P");
         cout << "Dealer Hand: ";
-        Dealer.getHand();
+        getHand("D");
         cout << "Dealer has Blackjack!" << endl;
         return 2;
     }
@@ -205,23 +187,22 @@ class Round {
     }
 
     void playerStand() {
-    while(Dealer.value()<=21) {
-        if(Dealer.value()<Player.value() && Dealer.value()<17){
+    while(value("D")<=21) {
+        if(value("D")<=value("P") && value("D")<17){
             vector<int>::iterator i = s.Cards.begin();
             int card = *i;
-            Dealer.hand.push_back(card);
-            if(card < 7) {
-            count++;
-            }
-            else if(card>=10) {
-                count--;
-            }
-            else{
 
+            if(card < 7 && card > 1) {
+                count++;
             }
+            else if(card>=10 || card == 1) {
+                count=count -1;
+            }
+            
+            Dealer.hand.push_back(card);
             s.Cards.erase(s.Cards.begin());
         }
-        else if(Dealer.value()>=17) {
+        else if(value("D")>=17) {
             break;
         }
         else {
@@ -245,25 +226,91 @@ class Round {
     void hit(string user) {
     vector<int>::iterator i = s.Cards.begin();
     int card = *i;
-    {
+
     if(user == "P"){
     Player.hand.push_back(card);
+        if(card < 7 && card > 1) {
+            count++;
+        }
+        else if(card>=10 || card == 1) {
+            count=count-1;
+        }
     }
     else if(user == "D"){
-    Dealer.hand.push_back(card);
-    }
-    }
-    {
-    if(card < 7) {
+        if(card < 7) {
         count++;
-    }
-    else if(card>=10) {
-        count--;
-    }
+        }
+        else if(card>=10) {
+        count=count-1;
+        }
+    Dealer.hand.push_back(card);
     }
     s.Cards.erase(s.Cards.begin());
     
     }
+
+    int value(string user) {
+    vector<int> handvalue;
+    int hvalue;
+
+    if(user == "P"){
+    int numcards = Player.hand.size();
+
+    //Create the original value of the hand
+    for(int i = 0;i<numcards;i++){
+        if(Player.hand[i]==1){
+            handvalue.push_back(11);
+        }
+        else if(Player.hand[i]==11 || Player.hand[i]==12 || Player.hand[i]==13){
+            handvalue.push_back(10);
+        }
+        else {
+            handvalue.push_back(Player.hand[i]);
+        }
+    }
+    
+    //Fix exceptions
+    for(int i = 0;i<numcards;i++){
+        if(handvalue[i]==11 && (std::accumulate(handvalue.begin(), handvalue.end(),0)) > 21) {
+            handvalue[i] = 1;
+        }
+    }
+
+    hvalue = std::accumulate(handvalue.begin(), handvalue.end(),0);
+    
+    return hvalue;
+    }
+
+    else if(user == "D"){
+    int numcards = Dealer.hand.size();
+
+    //Create the original value of the hand
+    for(int i = 0;i<numcards;i++){
+        if(Dealer.hand[i]==1){
+            handvalue.push_back(11);
+        }
+        else if(Dealer.hand[i]==11 || Dealer.hand[i]==12 || Dealer.hand[i]==13){
+            handvalue.push_back(10);
+        }
+        else {
+            handvalue.push_back(Dealer.hand[i]);
+        }
+    }
+    
+    //Fix exceptions
+    for(int i = 0;i<numcards;i++){
+        if(handvalue[i]==11 && (std::accumulate(handvalue.begin(), handvalue.end(),0)) > 21) {
+            handvalue[i] = 1;
+        }
+    }
+
+    hvalue = std::accumulate(handvalue.begin(), handvalue.end(),0);
+    
+    return hvalue;
+    }
+    return hvalue;
+    }
+
     void getCount() {
         cout << "Count: " << count << endl;
     }

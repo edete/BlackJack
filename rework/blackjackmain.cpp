@@ -16,6 +16,7 @@ int main() {
     string Dealer = "D";
     string action = "";
     Round R1;
+    R1.count=0;
     R1.shuffle();
     R1.shuffle();
     R1.shuffle();
@@ -26,10 +27,10 @@ int main() {
 
         while(win == 0) {
             cout << "Player Hand: ";
-            R1.Player.getHand();
+            R1.getHand("P");
 
             cout << "Dealer Hand: ";
-            R1.Dealer.getDHand();
+            R1.getDHand();
 
             cin>>action;
 
@@ -40,9 +41,9 @@ int main() {
             else if(action == "stand"){
                 R1.playerStand();
                 cout << "Player Hand: ";
-                R1.Player.getHand();
+                R1.getHand("P");
                 cout << "Dealer Hand: ";
-                R1.Dealer.getHand();
+                R1.getHand("D");
                 win = R1.win();
                 break;
                 }
